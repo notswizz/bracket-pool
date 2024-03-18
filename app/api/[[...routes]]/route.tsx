@@ -44,17 +44,19 @@ app.frame('/', (c) => {
             marginTop: 30,
           }}
         >
-          Check Pool
+          bracket.game stats
         </div>
       </div>
     ),
     intents: [
-      <Button action="/poolPrice" value="checkPool">Check Pool</Button>,
+      <Button action="/poolTotal" value="checkPoolTotal">Pool Total</Button>,
+      <Button action="/volume24h" value="checkVolume24h">24h Volume</Button>,
+      <Button action="/uniqueOwners" value="checkUniqueOwners">Unique Owners</Button>,
     ],
   });
 });
 
-app.frame('/poolPrice', async (c) => {
+app.frame('/poolTotal', async (c) => {
   const response = await fetch('https://api.bracket.game/trpc/trade.getStats');
   const data = await response.json() as TradeStatsResponse;
 
@@ -65,7 +67,7 @@ app.frame('/poolPrice', async (c) => {
       <div
         style={{
           alignItems: 'center',
-          background: 'linear-gradient(to right, #6a11cb, #2575fc)',
+          background: 'black',
           display: 'flex',
           flexDirection: 'column',
           height: '100%',
@@ -84,6 +86,84 @@ app.frame('/poolPrice', async (c) => {
           }}
         >
           Pool Total: {formattedPoolTotal}
+        </div>
+      </div>
+    ),
+    intents: [
+      <Button action="/" value="back">Back</Button>,
+    ],
+  });
+});
+
+app.frame('/volume24h', async (c) => {
+  const response = await fetch('https://api.bracket.game/trpc/trade.getStats');
+  const data = await response.json() as TradeStatsResponse;
+
+  const formattedVolume24h = new Intl.NumberFormat('en-US', { style: 'currency', currency: 'USD' }).format(data.result.data.json.volume24h);
+
+  return c.res({
+    image: (
+      <div
+        style={{
+          alignItems: 'center',
+          background: 'black',
+          display: 'flex',
+          flexDirection: 'column',
+          height: '100%',
+          justifyContent: 'center',
+          textAlign: 'center',
+          width: '100%',
+        }}
+      >
+        <div
+          style={{
+            color: 'white',
+            display: 'flex',
+            fontSize: 60,
+            flexDirection: 'column',
+            marginTop: 30,
+          }}
+        >
+          24h Volume: {formattedVolume24h}
+        </div>
+      </div>
+    ),
+    intents: [
+      <Button action="/" value="back">Back</Button>,
+    ],
+  });
+});
+
+app.frame('/uniqueOwners', async (c) => {
+  const response = await fetch('https://api.bracket.game/trpc/trade.getStats');
+  const data = await response.json() as TradeStatsResponse;
+
+  const totalUniqueOwners = data.result.data.json.totalUniqueOwners;
+
+  return c.res({
+    image: (
+      <div
+        style={{
+          alignItems: 'center',
+          background: 'black',
+          display: 'flex',
+          flexDirection: 'column',
+          height: '100%',
+          justifyContent: 'center',
+          textAlign: 'center',
+          width: '100%',
+        }}
+      >
+        <div
+          style={{
+            color: 'white',
+            display: 'flex',
+            fontSize: 60,
+            flexDirection: 'column',
+            marginTop: 30,
+          }}
+        >
+          Unique Owners: {totalUniqueOwners}
         </div>
       </div>
     ),
